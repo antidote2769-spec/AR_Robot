@@ -60,7 +60,7 @@ async def send_restart(application: Application) -> None:
         if LOGS_CHANNEL:
             await application.bot.send_message(
                 chat_id=LOGS_CHANNEL,
-                text=f"<b>Alone robot just restarted! ♥️</b>\n\n<b>Time:</b> <code>{time.ctime()}</code>",
+                text=f"<b>𖤍 ˹ ᴀʀ ꭙ ʙᴏᴛ ˼ just restarted! ♥️</b>\n\n<b>Time:</b> <code>{time.ctime()}</code>",
                 parse_mode=constants.ParseMode.HTML
             )
     except Exception as e:
