@@ -38,9 +38,9 @@ ALONE_OWNER_ID = int(getenv("ALONE_OWNER_ID", "0"))
 # Chat id of a group for logging bot's activities
 LOG_GROUP_ID = int(getenv("LOG_GROUP_ID", "0"))
 
-SUPPORT_GROUP = getenv("SUPPORT_GROUP", "https://t.me/EikoUpdates")
+SUPPORT_GROUP = getenv("SUPPORT_GROUP", "https://t.me/antidote_69")
 
-START_IMG_URL = getenv("START_IMG_URL", "https://files.catbox.moe/1gxuh7.jpg")
+START_IMG_URL = getenv("START_IMG_URL", "https://files.catbox.moe/opkx6p.png")
 
 
 SUPPORT_CHAT = getenv('SUPPORT_CHAT', 'EikoUpdates')
@@ -84,7 +84,7 @@ GIST_TOKEN = getenv('GIST_TOKEN')
 
 
 # keep alive ( web support )
-WEB_URL = getenv('WEB_URL', "https://t.me/ForRealAlone")
+WEB_URL = getenv('WEB_URL', "https://t.me/antidote_69")
 
 KEEP_ALIVE = getenv('KEEP_ALIVE', 'True').lower() == 'true'
 PORT = int(os.environ.get("PORT", 8080))
@@ -98,17 +98,17 @@ BTN_ROWS = int(getenv('BTN_ROWS', '6'))
 
 
 # some media source
-PM_START_IMG = getenv('PM_START_IMG', "https://files.catbox.moe/1gxuh7.jpg")
+PM_START_IMG = getenv('PM_START_IMG', "https://files.catbox.moe/opkx6p.png")
 
-HELP_CMD_IMG = getenv('HELP_CMD_IMG', "https://files.catbox.moe/1gxuh7.jpg")
-
-
-HELP_MODULE_IMG = getenv('HELP_MODULE_IMG', "https://files.catbox.moe/1gxuh7.jpg")
-
-START_IMG = getenv('START_IMG', "https://files.catbox.moe/1gxuh7.jpg")
+HELP_CMD_IMG = getenv('HELP_CMD_IMG', "https://files.catbox.moe/opkx6p.png")
 
 
-FORCE_JOIN_IMG = getenv('FORCE_JOIN_IMG', "https://files.catbox.moe/1gxuh7.jpg")
+HELP_MODULE_IMG = getenv('HELP_MODULE_IMG', "https://files.catbox.moe/opkx6p.png")
+
+START_IMG = getenv('START_IMG', "https://files.catbox.moe/opkx6p.png")
+
+
+FORCE_JOIN_IMG = getenv('FORCE_JOIN_IMG', "https://files.catbox.moe/opkx6p.png")
 
 AF_START_STICKERS = [
   "CAACAgUAAxkBAAEBrV9nWukpft8gmtrZVMkbO4GKlZy0HQACWxUAAnHv2FZkjr7WjG3OjzYE",
