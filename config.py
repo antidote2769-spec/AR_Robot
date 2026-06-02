@@ -56,8 +56,8 @@ else:
     LOGS_CHANNEL = None
 
 LOGGER_ID = int(getenv('LOGGER_ID', '0'))
-BOT_USERNAME = getenv('BOT_USERNAME', '@oxnybot')
-BOT_NAME = getenv('BOT_NAME', 'Eiko')
+BOT_USERNAME = getenv('BOT_USERNAME', '@AR_XBOT')
+BOT_NAME = getenv('BOT_NAME', '𖤍 ˹ ᴀʀ ꭙ ʙᴏᴛ ˼')
 IS_WEB_SUP = getenv('IS_WEB_SUP', 'True').lower() == 'true'
 
 SUDO_USERS = [int(x) for x in getenv("SUDO_USERS", "8458947967").split() if x.isdigit()]
