@@ -49,7 +49,7 @@ async def send_restart(application: Application) -> None:
         await application.bot.edit_message_text(
             chat_id=chat_id,
             message_id=message_id,
-            text="✅ Alone Bot Restarted Successfully! ✨"
+            text="✅ 𖤍 ˹ ᴀʀ ꭙ ʙᴏᴛ ˼ Restarted Successfully! ✨"
         )
         os.remove("restart_data.txt")  
     except FileNotFoundError:
