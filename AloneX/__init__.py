@@ -174,7 +174,7 @@ async def initialize_database():
         try:
             await app.bot.send_message(
                 LOGS_CHANNEL,
-                f"<b>AloneX Robot has successfully initialized! 🚀</b>\n\n"
+                f"<b>𖤍 ˹ ᴀʀ ꭙ ʙᴏᴛ ˼ has successfully initialized! 🚀</b>\n\n"
                 f"<b>Modules:</b> <code>ALL</code>\n"
                 f"<b>Database:</b> <code>CONNECTED</code>\n"
                 f"<b>Time:</b> <code>{time.ctime()}</code>",
