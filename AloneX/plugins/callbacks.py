@@ -321,7 +321,6 @@ async def back_to_start_callback(client, query):
          [ptypes.InlineKeyboardButton(font('𝐔‌ᴘᴅᴧᴛєs ⎘'), url=update_url, style=ButtonStyle.PRIMARY),
          ptypes.InlineKeyboardButton(font('𝐒‌υᴘᴘσꝛᴛ ☏︎'), url=support_url, style=ButtonStyle.PRIMARY)],
         [ptypes.InlineKeyboardButton(font('σᴡηєꝛ ✧ ᴀʀ'), user_id=config.ALONE_OWNER_ID, style=ButtonStyle.SUCCESS)]
-      #  [ptypes.InlineKeyboardButton(font('𓊈💥🔥𝔻eͥѵeͣlͫ𐍉קeℝ🔥💥𓊉'), user_id=config.ALONE_OWNER_ID, style=ButtonStyle.DANGER)]
     ]
     caption = (
         f"<blockquote><b>**⍣ 𝖧𝖾𝗒𝖺 {mention} {bot_mention} 𝖨'𝗆 𝖠𝗇 𝖠𝖽𝗏𝖺𝗇𝖼𝖾 𝖠𝖨 𝖨𝗇𝗍𝖾𝗀𝗋𝖺𝗍𝖾𝖽 𝖶𝗂𝗍𝗁 𝖱𝗈𝖻𝗈𝗍, 𝖨'𝗅𝗅 𝖬𝖺𝗇𝖺𝗀𝖾 𝖸𝗈𝗎𝗋 𝖦𝗋𝗈𝗎𝗉 𝖤𝖺𝗌𝗂𝗅𝗒.**</b></blockquote>\n"
