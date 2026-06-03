@@ -315,11 +315,12 @@ async def back_to_start_callback(client, query):
     update_url = UPDATE_CHANNEL if UPDATE_CHANNEL.startswith("http") else f'https://t.me/{UPDATE_CHANNEL.lstrip("@")}'
     
     buttons = [
-        [ptypes.InlineKeyboardButton(font('🎧 Music'), callback_data="settings_back_helper", style=ButtonStyle.SUCCESS),
-         ptypes.InlineKeyboardButton(font('⚙ Help ⚙'), callback_data=f'help_{user_id}', style=ButtonStyle.PRIMARY),
-         ptypes.InlineKeyboardButton(font('Update 💬'), url=update_url, style=ButtonStyle.SUCCESS)],
-        [ptypes.InlineKeyboardButton(font("📝 Switch Too Inline 📝"), switch_inline_query_current_chat="", style=ButtonStyle.DANGER)],
-        [ptypes.InlineKeyboardButton(font('➕ Add Me Else Your Group ➕'), url=f'https://t.me/{bot_username}?startgroup=true', style=ButtonStyle.SUCCESS)]
+        [ptypes.InlineKeyboardButton(font('＋ 𝐈‌ηᴛєɢꝛᴧᴛє 𝐈‌η 𝐘‌συꝛ 𝐂‌ʜᴧᴛ  ＋'), url=f'https://t.me/{bot_username}?startgroup=true', style=ButtonStyle.SUCCESS)],
+        [ptypes.InlineKeyboardButton(font('🎧 𝐌‌υsɪᴄ'), url=f'https://t.me/AR_MUSIC_27BOT?start=help', style=ButtonStyle.PRIMARY),
+         ptypes.InlineKeyboardButton(font('⚙ 𝐇‌єʟᴘ ⚙'), callback_data=f'help_{user_id}', style=ButtonStyle.DANGER)],
+         [ptypes.InlineKeyboardButton(font('𝐔‌ᴘᴅᴧᴛєs ⎘'), url=update_url, style=ButtonStyle.PRIMARY),
+         ptypes.InlineKeyboardButton(font('𝐒‌υᴘᴘσꝛᴛ ☏︎'), url=support_url, style=ButtonStyle.PRIMARY)],
+        [ptypes.InlineKeyboardButton(font('σᴡηєꝛ ✧ ᴀʀ'), user_id=config.ALONE_OWNER_ID, style=ButtonStyle.SUCCESS)]
       #  [ptypes.InlineKeyboardButton(font('𓊈💥🔥𝔻eͥѵeͣlͫ𐍉קeℝ🔥💥𓊉'), user_id=config.ALONE_OWNER_ID, style=ButtonStyle.DANGER)]
     ]
     caption = (
