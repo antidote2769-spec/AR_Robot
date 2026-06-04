@@ -85,8 +85,48 @@ def _gbi(): return _bi
 def _gsb(uid):
     su = SUPPORT_CHAT if SUPPORT_CHAT.startswith("http") else f"https://t.me/{SUPPORT_CHAT.lstrip('@')}"
     uu = UPDATE_CHANNEL if UPDATE_CHANNEL.startswith("http") else f"https://t.me/{UPDATE_CHANNEL.lstrip('@')}"
-    au = f"https://t.me/{BOT_UN}?startgroup=true&admin=manage_chat+change_info+post_messages+edit_messages+delete_messages+invite_user"
-    return InlineKeyboardMarkup([[InlineKeyboardButton(font("🎧 Music"),  callback_data="settings_back_helper", style=ButtonStyle.SUCCESS), InlineKeyboardButton(font("⚙ Help ⚙"), callback_data=f"help_{uid}", style=ButtonStyle.PRIMARY), InlineKeyboardButton(font("Update 💬"), url=uu, style=ButtonStyle.SUCCESS)],[InlineKeyboardButton(font("📝 Switch Too Inline 📝"), switch_inline_query_current_chat="", style=ButtonStyle.DANGER)],[InlineKeyboardButton(font("➕ Add Me Else Your Group ➕"), url=au, style=ButtonStyle.SUCCESS)]])
+    au = f"https://t.me/{BOT_UN}?startgroup=true"
+
+    return InlineKeyboardMarkup([
+        [
+            InlineKeyboardButton(
+                font("＋ 𝐈ηᴛᴇɢʀᴀᴛᴇ 𝐈η 𝐘ᴏᴜʀ 𝐂ʜᴀᴛ ＋"),
+                url=au,
+                style=ButtonStyle.SUCCESS
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                font("🎧 𝐌ᴜsɪᴄ"),
+                url="https://t.me/AR_MUSIC_27BOT?start=help",
+                style=ButtonStyle.PRIMARY
+            ),
+            InlineKeyboardButton(
+                font("⚙ 𝐇ᴇʟᴘ ⚙"),
+                callback_data=f"help_{uid}",
+                style=ButtonStyle.DANGER
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                font("𝐔ᴘᴅᴀᴛᴇs ⎘"),
+                url=uu,
+                style=ButtonStyle.PRIMARY
+            ),
+            InlineKeyboardButton(
+                font("𝐒ᴜᴘᴘᴏʀᴛ ☏︎"),
+                url=su,
+                style=ButtonStyle.PRIMARY
+            )
+        ],
+        [
+            InlineKeyboardButton(
+                font("σᴡηᴇʀ ✧ ᴀʀ"),
+                user_id=config.ALONE_OWNER_ID,
+                style=ButtonStyle.SUCCESS
+            )
+        ]
+    ])
     
 async def _sp(cid, p, c=None, rm=None, eid=None, rt=None):
     try:
