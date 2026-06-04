@@ -316,10 +316,10 @@ async def back_to_start_callback(client, query):
     
     buttons = [
         [ptypes.InlineKeyboardButton(font('＋ 𝐈‌ηᴛєɢꝛᴧᴛє 𝐈‌η 𝐘‌συꝛ 𝐂‌ʜᴧᴛ  ＋'), url=f'https://t.me/{bot_username}?startgroup=true', style=ButtonStyle.SUCCESS)],
-        [ptypes.InlineKeyboardButton(font('🎧 𝐌‌υsɪᴄ'), url=f'https://t.me/AR_MUSIC_27BOT?start=help', style=ButtonStyle.PRIMARY),
-         ptypes.InlineKeyboardButton(font('⚙ 𝐇‌єʟᴘ ⚙'), callback_data=f'help_{user_id}', style=ButtonStyle.DANGER)],
-         [ptypes.InlineKeyboardButton(font('𝐔‌ᴘᴅᴧᴛєs ⎘'), url=update_url, style=ButtonStyle.PRIMARY),
-         ptypes.InlineKeyboardButton(font('𝐒‌υᴘᴘσꝛᴛ ☏︎'), url=support_url, style=ButtonStyle.PRIMARY)],
+        [ptypes.InlineKeyboardButton(font('🎧 𝐌‌υsɪᴄ'), url=f'https://t.me/AR_MUSIC_27BOT?start=help', style=ButtonStyle.PRIMARY)],
+        [ptypes.InlineKeyboardButton(font('⚙ 𝐇‌єʟᴘ ⚙'), callback_data=f'help_{user_id}', style=ButtonStyle.DANGER)],
+         [ptypes.InlineKeyboardButton(font('𝐔‌ᴘᴅᴧᴛєs ⎘'), url=update_url, style=ButtonStyle.PRIMARY)],
+        [ptypes.InlineKeyboardButton(font('𝐒‌υᴘᴘσꝛᴛ ☏︎'), url=support_url, style=ButtonStyle.PRIMARY)],
         [ptypes.InlineKeyboardButton(font('σᴡηєꝛ ✧ ᴀʀ'), user_id=config.ALONE_OWNER_ID, style=ButtonStyle.SUCCESS)]
     ]
     caption = (
