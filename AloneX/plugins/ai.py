@@ -483,10 +483,7 @@ async def auto_ai_chat(update, context):
             api_key=config.GROQ_API_KEY
         )
 
-        reply_text = data.get(
-            "reply",
-            "Sorry, I can't answer that."
-        )
+        reply_text = str(data)
 
         if len(reply_text) > 4096:
             reply_text = reply_text[:4000] + "..."
