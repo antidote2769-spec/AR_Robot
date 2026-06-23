@@ -537,35 +537,17 @@ async def withdraw(_, m: types.Message):
     await m.reply(
         f"💰 Withdrawn {amount} Cash"
     )
-@bot.on_message(filters.command("richlist"))
-async def richlist(_, m: types.Message):
+@app.on_message(filters.command("richlist"))
+async def richlist(client, message):
 
-    users = await get_top_users(10)
+    users = await get_richlist(10)
 
-    text = "🏆 TOP 10 RICHEST PLAYERS\n\n"
+    text = "💰 TOP RICH USERS\n\n"
 
-    rank = 1
+    for i, user in enumerate(users, 1):
+        text += f"{i}. {user.get('name','Unknown')} - {user.get('cash',0)}\n"
 
-    for user in users:
-
-        name = user.get(
-            "name",
-            "Unknown"
-        )
-
-        cash = user.get(
-            "cash",
-            0
-        )
-
-        text += (
-            f"{rank}. {name}\n"
-            f"💰 {cash}\n\n"
-        )
-
-        rank += 1
-
-    await m.reply(text)
+    await message.reply(text)
 @bot.on_message(filters.command("beg"))
 async def beg(_, m: types.Message):
 
@@ -626,32 +608,25 @@ async def flip(_, m: types.Message):
         await m.reply(
             f"💀 You Lost {amount}!"
         )
-@bot.on_message(filters.command("profile"))
-async def profile(_, m):
+@app.on_message(filters.command("profile"))
+async def profile(client, message):
 
-    await register_user(
-        m.from_user.id,
-        m.from_user.full_name
-    )
+    user_id = message.from_user.id
 
-    cash = await get_cash(
-        m.from_user.id
-    )
+    user = await get_profile(user_id)
 
-    bank = await get_bank(
-        m.from_user.id
-    )
+    if not user:
+        await message.reply("❌ Profile not found")
+        return
 
-    kills = await get_kills(
-        m.from_user.id
-    )
-
-    await m.reply(
-        f"👤 PLAYER PROFILE\n\n"
-        f"💰 Cash: {cash}\n"
-        f"🏦 Bank: {bank}\n"
-        f"☠️ Kills: {kills}"
-    )
+    await message.reply(
+        f"""
+👤 Name: {user['name']}
+💰 Cash: {user['cash']}
+🏦 Bank: {user['bank']}
+🔪 Kills: {user['kills']}
+"""
+        )
 @bot.on_message(filters.command("bonus"))
 async def bonus(_, m):
 
