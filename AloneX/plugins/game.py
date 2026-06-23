@@ -785,7 +785,8 @@ async def xo_start(_, m):
 
     xo_games[game_id] = {
         "player": user,
-        "board": [" "] * 9
+        "board": [" "] * 9,
+        "mode": "bot"
     }
 
     await m.reply(
@@ -798,7 +799,6 @@ async def xo_start(_, m):
 async def xo_callback(_, query: CallbackQuery):
 
     data = query.data.split(":")
-
     game_id = data[1]
     pos = int(data[2])
 
@@ -806,33 +806,26 @@ async def xo_callback(_, query: CallbackQuery):
         return await query.answer("Game Ended")
 
     game = xo_games[game_id]
-
-    if query.from_user.id != game["player"]:
-        return await query.answer("Not your game")
-
     board = game["board"]
 
-    if board[pos] != " ":
-        return await query.answer("Already used")
+    # PvP Mode
     if game.get("mode") == "pvp":
 
         if query.from_user.id not in [
             game["player1"],
             game["player2"]
         ]:
-            return await query.answer(
-                "Not your game"
-            )
+            return await query.answer("Not your game")
 
         if query.from_user.id != game["turn"]:
-            return await query.answer(
-                "Wait for your turn"
-            )
+            return await query.answer("Wait for your turn")
+
+        if board[pos] != " ":
+            return await query.answer("Already used")
 
         symbol = (
             "X"
-            if query.from_user.id ==
-            game["player1"]
+            if query.from_user.id == game["player1"]
             else "O"
         )
 
@@ -841,15 +834,12 @@ async def xo_callback(_, query: CallbackQuery):
         result = check_winner(board)
 
         if result == "Draw":
-
             del xo_games[game_id]
-
             return await query.message.edit_text(
                 "🤝 Match Draw!"
             )
 
         if result:
-
             winner_id = (
                 game["player1"]
                 if result == "X"
@@ -865,19 +855,26 @@ async def xo_callback(_, query: CallbackQuery):
 
             return await query.message.edit_text(
                 f"🏆 GAME OVER\n\n"
-                f"Winner: {'❌' if result == 'X' else '⭕'}\n"
+                f"Winner: {result}\n"
                 f"💰 Reward: 1000 Cash"
             )
+
         game["turn"] = (
             game["player2"]
-            if game["turn"] ==
-            game["player1"]
+            if game["turn"] == game["player1"]
             else game["player1"]
         )
 
         return await query.message.edit_reply_markup(
             reply_markup=make_board(game_id)
-        )    
+        )
+
+    # Bot Mode
+    if query.from_user.id != game["player"]:
+        return await query.answer("Not your game")
+
+    if board[pos] != " ":
+        return await query.answer("Already used")
 
     board[pos] = "X"
 
@@ -890,7 +887,7 @@ async def xo_callback(_, query: CallbackQuery):
         )
 
     empty = [
-        i for i,v in enumerate(board)
+        i for i, v in enumerate(board)
         if v == " "
     ]
 
@@ -902,11 +899,10 @@ async def xo_callback(_, query: CallbackQuery):
 
     if result:
         del xo_games[game_id]
-
         return await query.message.edit_text(
             f"🏆 Result: {result}"
         )
 
     await query.message.edit_reply_markup(
         reply_markup=make_board(game_id)
-    )
+        )
