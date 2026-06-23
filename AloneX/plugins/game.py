@@ -11,7 +11,9 @@ from AloneX.db.game import (
     set_protection,
     get_protection,
     get_profile,
-    get_richlist
+    get_richlist,
+    add_bank,
+    remove_bank
 
 )
 from datetime import datetime, timedelta
