@@ -537,7 +537,7 @@ async def withdraw(_, m: types.Message):
     await m.reply(
         f"💰 Withdrawn {amount} Cash"
     )
-@app.on_message(filters.command("richlist"))
+@bot.on_message(filters.command("richlist"))
 async def richlist(client, message):
 
     users = await get_richlist(10)
@@ -608,7 +608,7 @@ async def flip(_, m: types.Message):
         await m.reply(
             f"💀 You Lost {amount}!"
         )
-@app.on_message(filters.command("profile"))
+@bot.on_message(filters.command("profile"))
 async def profile(client, message):
 
     user_id = message.from_user.id
