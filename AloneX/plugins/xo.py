@@ -2,7 +2,7 @@ from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import random
 
-from db.game import (
+from AloneX.db.game import (
     create_ttt,
     get_ttt,
     update_ttt,
