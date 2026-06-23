@@ -136,3 +136,17 @@ async def get_kills(user_id: int):
         return 0
 
     return user.get("kills", 0)
+async def set_protection(user_id: int, expiry):
+    await db.update_one(
+        {"user_id": user_id},
+        {"$set": {"protection": expiry}},
+        upsert=True
+    )
+
+async def get_protection(user_id: int):
+    user = await db.find_one({"user_id": user_id})
+
+    if not user:
+        return None
+
+    return user.get("protection")
