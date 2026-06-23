@@ -754,31 +754,32 @@ def make_board(game_id):
 async def xo_start(_, m):
 
     user = m.from_user.id
+
     if m.reply_to_message:
 
-    opponent = m.reply_to_message.from_user
+        opponent = m.reply_to_message.from_user
 
-    if opponent.id == m.from_user.id:
+        if opponent.id == m.from_user.id:
+            return await m.reply(
+                "❌ Khud ke saath nahi khel sakte."
+            )
+
+        game_id = f"{m.from_user.id}_{opponent.id}"
+
+        xo_games[game_id] = {
+            "player1": m.from_user.id,
+            "player2": opponent.id,
+            "turn": m.from_user.id,
+            "board": [" "] * 9,
+            "mode": "pvp"
+        }
+
         return await m.reply(
-            "❌ Khud ke saath nahi khel sakte."
+            f"🎮 XO PvP Started!\n\n"
+            f"❌ {m.from_user.first_name}\n"
+            f"⭕ {opponent.first_name}",
+            reply_markup=make_board(game_id)
         )
-
-    game_id = f"{m.from_user.id}_{opponent.id}"
-
-    xo_games[game_id] = {
-        "player1": m.from_user.id,
-        "player2": opponent.id,
-        "turn": m.from_user.id,
-        "board": [" "] * 9,
-        "mode": "pvp"
-    }
-
-    return await m.reply(
-        f"🎮 XO PvP Started!\n\n"
-        f"❌ {m.from_user.first_name}\n"
-        f"⭕ {opponent.first_name}",
-        reply_markup=make_board(game_id)
-    )
 
     game_id = str(user)
 
@@ -790,7 +791,7 @@ async def xo_start(_, m):
     await m.reply(
         "🎮 Tic Tac Toe\n\n❌ You\n⭕ Bot",
         reply_markup=make_board(game_id)
-    )
+        )
 
 
 @bot.on_callback_query(filters.regex("^xo:"))
