@@ -1,4 +1,11 @@
 import random
+from pyrogram.types import (
+    InlineKeyboardMarkup,
+    InlineKeyboardButton,
+    CallbackQuery
+)
+
+xo_games = {}
 from pyrogram import filters, types
 from AloneX import pbot as bot
 from AloneX.db.game import (
@@ -698,6 +705,117 @@ async def hunt(_, m):
         f"🏹 Hunting Success\n\n"
         f"💰 Reward: {reward}"
     )
+ #xo   
+def check_winner(board):
+
+    wins = [
+        [0,1,2],[3,4,5],[6,7,8],
+        [0,3,6],[1,4,7],[2,5,8],
+        [0,4,8],[2,4,6]
+    ]
+
+    for a,b,c in wins:
+        if board[a] == board[b] == board[c] and board[a] != " ":
+            return board[a]
+
+    if " " not in board:
+        return "Draw"
+
+    return None
+
+
+def make_board(game_id):
+
+    board = xo_games[game_id]["board"]
+
+    rows = []
+
+    for i in range(0, 9, 3):
+        rows.append([
+            InlineKeyboardButton(
+                board[i] if board[i] != " " else "⬜",
+                callback_data=f"xo:{game_id}:{i}"
+            ),
+            InlineKeyboardButton(
+                board[i+1] if board[i+1] != " " else "⬜",
+                callback_data=f"xo:{game_id}:{i+1}"
+            ),
+            InlineKeyboardButton(
+                board[i+2] if board[i+2] != " " else "⬜",
+                callback_data=f"xo:{game_id}:{i+2}"
+            )
+        ])
+
+    return InlineKeyboardMarkup(rows)
+
+
 @bot.on_message(filters.command("xo"))
-async def xo(_, m):
-    await m.reply("🎮 XO Command Working!")
+async def xo_start(_, m):
+
+    user = m.from_user.id
+
+    game_id = str(user)
+
+    xo_games[game_id] = {
+        "player": user,
+        "board": [" "] * 9
+    }
+
+    await m.reply(
+        "🎮 Tic Tac Toe\n\n❌ You\n⭕ Bot",
+        reply_markup=make_board(game_id)
+    )
+
+
+@bot.on_callback_query(filters.regex("^xo:"))
+async def xo_callback(_, query: CallbackQuery):
+
+    data = query.data.split(":")
+
+    game_id = data[1]
+    pos = int(data[2])
+
+    if game_id not in xo_games:
+        return await query.answer("Game Ended")
+
+    game = xo_games[game_id]
+
+    if query.from_user.id != game["player"]:
+        return await query.answer("Not your game")
+
+    board = game["board"]
+
+    if board[pos] != " ":
+        return await query.answer("Already used")
+
+    board[pos] = "X"
+
+    result = check_winner(board)
+
+    if result:
+        del xo_games[game_id]
+        return await query.message.edit_text(
+            f"🏆 Result: {result}"
+        )
+
+    empty = [
+        i for i,v in enumerate(board)
+        if v == " "
+    ]
+
+    if empty:
+        bot_move = random.choice(empty)
+        board[bot_move] = "O"
+
+    result = check_winner(board)
+
+    if result:
+        del xo_games[game_id]
+
+        return await query.message.edit_text(
+            f"🏆 Result: {result}"
+        )
+
+    await query.message.edit_reply_markup(
+        reply_markup=make_board(game_id)
+    )
