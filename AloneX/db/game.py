@@ -150,3 +150,29 @@ async def get_protection(user_id: int):
         return None
 
     return user.get("protection")
+# =========================
+# PROFILE & RICHLIST
+# =========================
+
+async def get_profile(user_id: int):
+    user = await db.find_one({"user_id": user_id})
+
+    if not user:
+        return None
+
+    return {
+        "name": user.get("name", "Unknown"),
+        "cash": user.get("cash", 0),
+        "bank": user.get("bank", 0),
+        "kills": user.get("kills", 0),
+        "protection": user.get("protection")
+    }
+
+
+async def get_richlist(limit: int = 10):
+    users = await db.find().sort(
+        "cash",
+        -1
+    ).limit(limit).to_list(length=limit)
+
+    return users       
