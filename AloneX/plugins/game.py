@@ -2,6 +2,7 @@ import random
 from pyrogram import filters, types
 from AloneX import pbot as bot
 from AloneX.db.game import (
+from AloneX.db.game import (
     register_user,
     get_cash,
     update_cash,
@@ -13,8 +14,9 @@ from AloneX.db.game import (
     get_profile,
     get_richlist,
     add_bank,
-    remove_bank
-
+    remove_bank,
+    get_bank,
+    update_bank
 )
 from datetime import datetime, timedelta
 
@@ -697,3 +699,6 @@ async def hunt(_, m):
         f"🏹 Hunting Success\n\n"
         f"💰 Reward: {reward}"
     )
+@bot.on_message(filters.command("xo"))
+async def xo(_, m):
+    await m.reply("🎮 XO Command Working!")
