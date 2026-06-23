@@ -447,7 +447,7 @@ async def groq(update, context):
             text=f"❌ *ERROR*: `{str(e)}`",
             parse_mode=constants.ParseMode.MARKDOWN
         )
-async def auto_ai_chat(update, context):
+'''async def auto_ai_chat(update, context):
     message = update.effective_message
     bot = context.bot
 
@@ -499,4 +499,4 @@ app.add_handler(
         filters.TEXT & ~filters.COMMAND,
         auto_ai_chat
     )
-              )
+              )'''
