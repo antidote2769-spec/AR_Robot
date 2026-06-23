@@ -228,3 +228,140 @@ async def balance_alias(_, m):
     await m.reply(
         f"💰 Balance: {cash} Cash"
     )
+#give
+@bot.on_message(filters.command("give"))
+async def give_cash(_, m):
+
+    if not m.reply_to_message:
+        return await m.reply("Reply to user.")
+
+    if len(m.command) < 2:
+        return await m.reply("Usage: /give 1000")
+
+    amount = int(m.command[1])
+
+    sender = m.from_user
+    receiver = m.reply_to_message.from_user
+
+    sender_cash = await get_cash(sender.id)
+
+    if sender_cash < amount:
+        return await m.reply("Not enough cash.")
+
+    await update_cash(sender.id, -amount)
+    await update_cash(receiver.id, amount)
+
+    await m.reply(
+        f"✅ Transfer Success\n💸 Amount: {amount}"
+    )
+#protect
+@bot.on_message(filters.command("protect"))
+async def protect_user(_, m):
+
+    if len(m.command) < 2:
+        return await m.reply(
+            "Use:\n/protect 1D\n/protect 2D\n/protect 3D"
+        )
+
+    plan = m.command[1].upper()
+
+    if plan == "1D":
+        days = 1
+        price = 1000
+
+    elif plan == "2D":
+        days = 2
+        price = 2000
+
+    elif plan == "3D":
+        days = 3
+        price = 3000
+
+    else:
+        return await m.reply("Invalid Plan")
+
+    cash = await get_cash(m.from_user.id)
+
+    if cash < price:
+        return await m.reply(
+            f"Need {price} cash"
+        )
+
+    await update_cash(m.from_user.id, -price)
+
+    protected_users[m.from_user.id] = (
+        datetime.now() + timedelta(days=days)
+    )
+
+    await m.reply(
+        f"🛡 Protection Enabled For {days} Day"
+    )
+#rob
+@bot.on_message(filters.command("rob"))
+async def rob_cash(_, m):
+
+    if not m.reply_to_message:
+        return await m.reply("Reply to target user.")
+
+    if len(m.command) < 2:
+        return await m.reply("Usage: /rob 1000")
+
+    amount = int(m.command[1])
+
+    victim = m.reply_to_message.from_user
+    robber = m.from_user
+
+    if victim.id in protected_users:
+        if protected_users[victim.id] > datetime.now():
+            return await m.reply(
+                "🛡 User Protected"
+            )
+
+    victim_cash = await get_cash(victim.id)
+
+    if victim_cash < amount:
+        return await m.reply(
+            f"Target has only {victim_cash} Cash"
+        )
+
+    success = random.randint(1, 100)
+
+    if success <= 60:
+        await update_cash(victim.id, -amount)
+        await update_cash(robber.id, amount)
+
+        await m.reply(
+            f"🦹 Rob Success\n💰 {amount} Cash Stolen"
+        )
+    else:
+        await m.reply(
+            "🚔 Rob Failed"
+        )
+    #kill
+    @bot.on_message(filters.command("kill"))
+async def kill_user(_, m):
+
+    if not m.reply_to_message:
+        return await m.reply("Reply to target.")
+
+    killer = m.from_user
+    victim = m.reply_to_message.from_user
+
+    if victim.id in protected_users:
+        if protected_users[victim.id] > datetime.now():
+            return await m.reply(
+                "🛡 User Protected"
+            )
+
+    victim_cash = await get_cash(victim.id)
+
+    reward = victim_cash + 100
+
+    await update_cash(victim.id, -victim_cash)
+    await update_cash(killer.id, reward)
+
+    await m.reply(
+        f"☠️ Kill Success\n"
+        f"💰 Loot: {victim_cash}\n"
+        f"🎁 Bonus: 100"
+    )
