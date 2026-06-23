@@ -176,3 +176,19 @@ async def get_richlist(limit: int = 10):
     ).limit(limit).to_list(length=limit)
 
     return users       
+async def add_bank(user_id: int, amount: int):
+    await db.update_one(
+        {"user_id": user_id},
+        {"$inc": {"bank": amount}},
+        upsert=True
+    )
+    return True
+
+
+async def remove_bank(user_id: int, amount: int):
+    await db.update_one(
+        {"user_id": user_id},
+        {"$inc": {"bank": -amount}},
+        upsert=True
+    )
+    return True
