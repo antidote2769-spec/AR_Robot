@@ -36,6 +36,7 @@ dice_users = {}
 dart_users = {}
 bowl_users = {}
 FLOOD_MAX = 10  # in minutes
+protected_users = {}
 
 # Images
 TRY_LATER_IMG = "https://files.catbox.moe/yjiess.jpg"
@@ -218,3 +219,12 @@ async def _roll_dart(_, m: types.Message):
 @bot.on_message(filters.command("bowl") & ~filters.forwarded)
 async def _roll_bowl(_, m: types.Message):
     await handle_dice_game(m.from_user, m, "🎳", bowl_users, BOWL_REWARDS)
+#bal    
+@bot.on_message(filters.command("bal"))
+async def balance_alias(_, m):
+    user = m.from_user
+    cash = await get_cash(user.id)
+
+    await m.reply(
+        f"💰 Balance: {cash} Cash"
+    )
