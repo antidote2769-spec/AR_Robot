@@ -8,7 +8,7 @@ from AloneX.helpers.decorator import Command, send_action, Callbacks, spam_contr
 from AloneX.helpers.scripts import AiChats, paste, Gemini, GPTGeneration
 from AloneX.helpers.utils import get_ua, UserId, get_as_document
 from telegram import Update, constants, helpers, error, ReplyParameters
-from from telegram.ext import CallbackContext, MessageHandler, filters
+from telegram.ext import CallbackContext, MessageHandler, filters
 from telegram import InputMediaPhoto, constants, InlineKeyboardMarkup, InlineKeyboardButton
 from AloneX.helpers.scripts import get_output
 import json
