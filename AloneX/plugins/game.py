@@ -6,6 +6,7 @@ from pyrogram.types import (
 )
 
 xo_games = {}
+xo_invites = {}
 from pyrogram import filters, types
 from AloneX import pbot as bot
 from AloneX.db.game import (
@@ -753,6 +754,31 @@ def make_board(game_id):
 async def xo_start(_, m):
 
     user = m.from_user.id
+    if m.reply_to_message:
+
+    opponent = m.reply_to_message.from_user
+
+    if opponent.id == m.from_user.id:
+        return await m.reply(
+            "❌ Khud ke saath nahi khel sakte."
+        )
+
+    game_id = f"{m.from_user.id}_{opponent.id}"
+
+    xo_games[game_id] = {
+        "player1": m.from_user.id,
+        "player2": opponent.id,
+        "turn": m.from_user.id,
+        "board": [" "] * 9,
+        "mode": "pvp"
+    }
+
+    return await m.reply(
+        f"🎮 XO PvP Started!\n\n"
+        f"❌ {m.from_user.first_name}\n"
+        f"⭕ {opponent.first_name}",
+        reply_markup=make_board(game_id)
+    )
 
     game_id = str(user)
 
@@ -787,6 +813,70 @@ async def xo_callback(_, query: CallbackQuery):
 
     if board[pos] != " ":
         return await query.answer("Already used")
+    if game.get("mode") == "pvp":
+
+        if query.from_user.id not in [
+            game["player1"],
+            game["player2"]
+        ]:
+            return await query.answer(
+                "Not your game"
+            )
+
+        if query.from_user.id != game["turn"]:
+            return await query.answer(
+                "Wait for your turn"
+            )
+
+        symbol = (
+            "X"
+            if query.from_user.id ==
+            game["player1"]
+            else "O"
+        )
+
+        board[pos] = symbol
+
+        result = check_winner(board)
+
+        if result == "Draw":
+
+            del xo_games[game_id]
+
+            return await query.message.edit_text(
+                "🤝 Match Draw!"
+            )
+
+        if result:
+
+            winner_id = (
+                game["player1"]
+                if result == "X"
+                else game["player2"]
+            )
+
+            await update_cash(
+                winner_id,
+                1000
+            )
+
+            del xo_games[game_id]
+
+            return await query.message.edit_text(
+                f"🏆 GAME OVER\n\n"
+                f"Winner: {'❌' if result == 'X' else '⭕'}\n"
+                f"💰 Reward: 1000 Cash"
+            )
+        game["turn"] = (
+            game["player2"]
+            if game["turn"] ==
+            game["player1"]
+            else game["player1"]
+        )
+
+        return await query.message.edit_reply_markup(
+            reply_markup=make_board(game_id)
+        )    
 
     board[pos] = "X"
 
