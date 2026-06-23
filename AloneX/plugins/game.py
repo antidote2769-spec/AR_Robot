@@ -2,7 +2,6 @@ import random
 from pyrogram import filters, types
 from AloneX import pbot as bot
 from AloneX.db.game import (
-from AloneX.db.game import (
     register_user,
     get_cash,
     update_cash,
