@@ -1,367 +1,159 @@
 import random
-import asyncio
-import config
-from pyrogram import filters, types, enums
-from AloneX import pbot as bot, font
+from pyrogram import filters, types
+from AloneX import pbot as bot
 from AloneX.db.game import (
-    update_cash, get_cash, update_name,
-    get_steal_date, update_steal_date, get_top_users
+    register_user,
+    get_cash,
+    update_cash,
+    update_name,
+    update_kills,
+    get_kills
 )
-from datetime import datetime, timedelta, date
 
-__module__ = "𝐆ᴀᴍᴇs🎮"
+__module__ = "Games 🎮"
 
 __help__ = """
-❂ *Game Module* — Have fun and compete with your friends using mini-games in your Telegram chat.
+💰 Economy System
 
-❂ *Commands*:
-❂ `/steal` — Try to steal coins from other users.  
-❂ `/bowl` — Play a bowling mini-game.  
-❂ `/dart` — Test your aim with darts.  
-❂ `/dice` — Roll a dice and see what luck brings you.  
-❂ `/gamble` — Gamble coins for a chance to win big.  
-❂ `/balance` — Check your current coin balance.  
-❂ `/richlist` — See the leaderboard of richest users.  
-❂ `/domain` — Claim and manage your virtual domains.  
-❂ `/status` — View your game stats and achievements.  
-
-❂ *Features*:
-❂ Earn coins, gamble, and climb the leaderboard.  
-❂ Interactive mini-games to challenge friends.  
-❂ Track balances and stats for fun competitions.  
+/bal - Check Balance
 """
+@bot.on_message(filters.command(["bal", "balance"]))
+async def balance(_, m: types.Message):
 
-# Flood control
-dice_users = {}
-dart_users = {}
-bowl_users = {}
-FLOOD_MAX = 10  # in minutes
-protected_users = {}
-
-# Images
-TRY_LATER_IMG = "https://files.catbox.moe/yjiess.jpg"
-GOOD_LUCK_IMG = "https://files.catbox.moe/2y8fnb.jpg"
-BAD_LUCK_IMG = "https://files.catbox.moe/4cyx4f.jpg"
-SERIOUS_IMG = "https://files.catbox.moe/ee8bky.jpg"
-
-# Remove user after delay
-async def remove_user_after_delay(user_id, data):
-    await asyncio.sleep(FLOOD_MAX * 60)
-    data.pop(user_id, None)
-
-# Admin command: set user cash
-@bot.on_message(filters.command("setcash") & filters.user(config.DEV_LIST))
-async def _setUserCash(_, m: types.Message):
-    try:
-        user_id = int(m.text.split()[1])
-        cash = int(m.text.split()[2])
-        if await update_cash(user_id, cash):
-            await m.reply(font("✅ Cash added to account!"))
-    except Exception as e:
-        await m.reply(f"❌ ERROR: {e}")
-
-# Richlist
-@bot.on_message(filters.command("richlist"))
-async def _richList(_, m: types.Message):
-    users_list = await get_top_users()
-    if not users_list:
-        return await m.reply(font("**Yo, fam!** No top users in sight. 😅"))
-
-    text = "💸💸 **Rich Players flexin' in the groups... 💸💸**\n\n"
-
-    for roll, user in enumerate(users_list, start=1):
-        if user.get("cash", 0) == 0:
-            continue
-
-        user_id = user.get("user_id")
-        user_name = user.get("name")
-        if not user_name:
-            try:
-                telegram_user = await bot.get_users(user_id)
-                user_name = telegram_user.full_name
-                await update_name(user_id, user_name)
-            except Exception:
-                user_name = "Unknown"
-
-        mention = f"[{user_name}](tg://user?id={user_id})"
-        text += f"{roll}. {mention} — {user['cash']} 💸\n"
-
-    text += "\n**Think you can outshine me? Bring it on! 😼**"
-    await m.reply_photo("https://files.catbox.moe/562cjr.jpg", caption=text, parse_mode=enums.ParseMode.MARKDOWN)
-
-# Balance check
-@bot.on_message(filters.command("balance") & ~filters.forwarded)
-async def _checkBalance(_, m: types.Message):
-    user = m.from_user
-    cash = await get_cash(user.id)
-    if cash == 0:
-        return await m.reply("*Bro* You are too poor, try making some money otherwise you can't live in the world! 🥴")
-    await update_name(user.id, user.full_name)
-    await m.reply_photo(TRY_LATER_IMG, caption=f"**Yo, {user.full_name}! Your balance is a whopping {cash} cash!** 💸💸")
-
-# Steal command
-@bot.on_message(filters.command(["domain", "steal"]))
-async def _stealCash(_, m: types.Message):
-    user = m.from_user
-    reply = m.reply_to_message
-    if not reply:
-        return await m.reply(font("You need to reply to a fellow sorcerer, **bro** 😖"))
-    if reply.from_user.is_bot or reply.from_user.id == user.id:
-        return
-
-    user_cash = await get_cash(user.id)
-    reply_user = reply.from_user
-    today = date.today().day
-
-    prev_steal = await get_steal_date(user.id, reply_user.id)
-    if prev_steal and today == prev_steal:
-        return await m.reply("You've already pulled a heist today! Try again tomorrow 😈")
-
-    if user_cash < 1000:
-        return await m.reply(font("To pull off a heist, you need at least 1000 cash 💸."))
-
-    reply_cash = await get_cash(reply_user.id)
-    if reply_cash < 1000:
-        return await m.reply(font("Lol! Not enough cursed energy to steal from someone! They need at least 1000 cash 💸"))
-
-    msg = await m.reply(font("AloneX cloths open! ..."))
-    await update_steal_date(user.id, reply_user.id, today)
-    await asyncio.sleep(2)
-
-    steal_percentage = random.randint(1, 60)
-    success = random.choice([True, False])
-
-    if not success:
-        await msg.edit("😱 Oh no! You don't stand a chance against them today.")
-    else:
-        amount = int((steal_percentage / 100) * reply_cash)
-        await update_cash(user.id, amount)
-        await update_cash(reply_user.id, -amount)
-        await msg.edit(f"🤑 You just snagged {amount} cash 💸💸 ({steal_percentage}%) from {reply_user.full_name}! 😼")
-
-# Gamble command
-@bot.on_message(filters.command(["gamble"]) & ~filters.forwarded)
-async def _gamble(_, m: types.Message):
-    user = m.from_user
-    cash = await get_cash(user.id)
-    if cash == 0:
-        return await m.reply("😂 You're broke, *sorcerer*. Go earn something.")
-
-    if len(m.command) < 2 or not m.command[1].isdigit():
-        return await m.reply(font("🙄 Enter a valid amount.\nExample: /gamble 1000"))
-
-    gamble = int(m.command[1])
-    if gamble > cash:
-        return await m.reply("😂 You don't have enough cash to gamble.")
-
-    results = [2, -1.2, 0, 1.2, 0, -1.5, 1.5, 0, 0, 2.1, 1.3, 1.4, -1.2]
-    multiplier = random.choice(results)
-
-    if multiplier < 0:
-        loss = int(gamble * abs(multiplier))
-        await update_cash(user.id, -loss)
-        return await m.reply_photo(SERIOUS_IMG, caption=f"🤧 You lost {loss} 💸 to a curse!")
-    elif multiplier > 0:
-        win = int(gamble * multiplier)
-        await update_cash(user.id, win)
-        return await m.reply_photo(GOOD_LUCK_IMG, caption=f"🔥 You earned {win} Cash! 💸")
-    else:
-        await update_cash(user.id, -gamble)
-        return await m.reply_photo(BAD_LUCK_IMG, caption=f"😭 You lost {gamble} Cash. Try again!")
-
-# Score + reward game handler
-async def handle_dice_game(user, m, emoji, user_dict, rewards):
-    if user.id in user_dict:
-        remaining = (user_dict[user.id] - datetime.now()).total_seconds() / 60
-        return await m.reply_photo(
-            TRY_LATER_IMG,
-            caption=f"🥲 Don't spam. Try again after {remaining:.2f} minutes ⏳"
-        )
-
-    user_dict[user.id] = datetime.now() + timedelta(minutes=FLOOD_MAX)
-
-    msg_dice = await bot.send_dice(
-        chat_id=m.chat.id,
-        emoji=emoji,
-        reply_parameters=types.ReplyParameters(message_id=m.id)
+    await register_user(
+        m.from_user.id,
+        m.from_user.full_name
     )
-    value = msg_dice.dice.value
-    reward = rewards.get(value, 0)
 
-    caption = f"🎲 **{user.full_name} scored** `{value}`!\n"
-    if reward > 0:
-        await update_cash(user.id, reward)
-        caption += f"💰 Earned: `{reward}` Cash 💸"
-        image = GOOD_LUCK_IMG
-    else:
-        caption += "😢 No reward this time. Keep trying!"
-        image = SERIOUS_IMG
+    await update_name(
+        m.from_user.id,
+        m.from_user.full_name
+    )
 
-    await msg_dice.reply_photo(image, caption=caption)
-    asyncio.create_task(remove_user_after_delay(user.id, user_dict))
-
-# Rewards
-DICE_REWARDS = {1: 1000, 2: 1500, 3: 2500, 4: 3500, 5: 5000, 6: 10000}
-DART_REWARDS = {1: 500, 2: 1000, 3: 2000, 4: 3000, 5: 6000, 6: 10000}
-BOWL_REWARDS = {1: 700, 2: 1200, 3: 2200, 4: 3200, 5: 5500, 6: 9000}
-
-# Dice command
-@bot.on_message(filters.command("dice") & ~filters.forwarded)
-async def _roll_dice(_, m: types.Message):
-    await handle_dice_game(m.from_user, m, "🎲", dice_users, DICE_REWARDS)
-
-# Dart command
-@bot.on_message(filters.command("dart") & ~filters.forwarded)
-async def _roll_dart(_, m: types.Message):
-    await handle_dice_game(m.from_user, m, "🎯", dart_users, DART_REWARDS)
-
-# Bowl command
-@bot.on_message(filters.command("bowl") & ~filters.forwarded)
-async def _roll_bowl(_, m: types.Message):
-    await handle_dice_game(m.from_user, m, "🎳", bowl_users, BOWL_REWARDS)
-#bal    
-@bot.on_message(filters.command("bal"))
-async def balance_alias(_, m):
-    user = m.from_user
-    cash = await get_cash(user.id)
+    cash = await get_cash(m.from_user.id)
 
     await m.reply(
-        f"💰 Balance: {cash} Cash"
+        f"💰 Balance\n\n"
+        f"💸 Cash: {cash}"
     )
-#give
+@bot.on_message(filters.command("daily"))
+async def daily(_, m: types.Message):
+
+    await register_user(
+        m.from_user.id,
+        m.from_user.full_name
+    )
+
+    reward = random.randint(500, 5000)
+
+    await update_cash(
+        m.from_user.id,
+        reward
+    )
+
+    await m.reply(
+        f"🎁 Daily Reward\n\n"
+        f"💸 +{reward} Cash"
+    ) 
+@bot.on_message(filters.command("work"))
+async def work(_, m: types.Message):
+
+    await register_user(
+        m.from_user.id,
+        m.from_user.full_name
+    )
+
+    reward = random.randint(200, 3000)
+
+    await update_cash(
+        m.from_user.id,
+        reward
+    )
+
+    await m.reply(
+        f"👨‍💻 Work Completed\n\n"
+        f"💰 Earned: {reward}"
+    )
+@bot.on_message(filters.command("crime"))
+async def crime(_, m: types.Message):
+
+    await register_user(
+        m.from_user.id,
+        m.from_user.full_name
+    )
+
+    success = random.choice([True, False])
+
+    if success:
+
+        reward = random.randint(1000, 7000)
+
+        await update_cash(
+            m.from_user.id,
+            reward
+        )
+
+        await m.reply(
+            f"😈 Crime Successful\n\n"
+            f"💰 Loot: {reward}"
+        )
+
+    else:
+
+        fine = random.randint(500, 3000)
+
+        await update_cash(
+            m.from_user.id,
+            -fine
+        )
+
+        await m.reply(
+            f"🚔 Police Caught You\n\n"
+            f"💸 Fine: {fine}"
+        )   
 @bot.on_message(filters.command("give"))
-async def give_cash(_, m):
+async def give(_, m: types.Message):
+
+    await register_user(
+        m.from_user.id,
+        m.from_user.full_name
+    )
 
     if not m.reply_to_message:
-        return await m.reply("Reply to user.")
+        return await m.reply(
+            "❌ Reply to a user."
+        )
 
     if len(m.command) < 2:
-        return await m.reply("Usage: /give 1000")
+        return await m.reply(
+            "Usage: /give 1000"
+        )
 
     amount = int(m.command[1])
 
     sender = m.from_user
     receiver = m.reply_to_message.from_user
 
-    sender_cash = await get_cash(sender.id)
+    sender_cash = await get_cash(
+        sender.id
+    )
 
     if sender_cash < amount:
-        return await m.reply("Not enough cash.")
+        return await m.reply(
+            "❌ Not enough cash."
+        )
 
-    await update_cash(sender.id, -amount)
-    await update_cash(receiver.id, amount)
-
-    await m.reply(
-        f"✅ Transfer Success\n💸 Amount: {amount}"
+    await update_cash(
+        sender.id,
+        -amount
     )
-#protect
-@bot.on_message(filters.command("protect"))
-async def protect_user(_, m):
 
-    if len(m.command) < 2:
-        return await m.reply(
-            "Use:\n/protect 1D\n/protect 2D\n/protect 3D"
-        )
-
-    plan = m.command[1].upper()
-
-    if plan == "1D":
-        days = 1
-        price = 1000
-
-    elif plan == "2D":
-        days = 2
-        price = 2000
-
-    elif plan == "3D":
-        days = 3
-        price = 3000
-
-    else:
-        return await m.reply("Invalid Plan")
-
-    cash = await get_cash(m.from_user.id)
-
-    if cash < price:
-        return await m.reply(
-            f"Need {price} cash"
-        )
-
-    await update_cash(m.from_user.id, -price)
-
-    protected_users[m.from_user.id] = (
-        datetime.now() + timedelta(days=days)
+    await update_cash(
+        receiver.id,
+        amount
     )
 
     await m.reply(
-        f"🛡 Protection Enabled For {days} Day"
-    )
-#rob
-@bot.on_message(filters.command("rob"))
-async def rob_cash(_, m):
-
-    if not m.reply_to_message:
-        return await m.reply("Reply to target user.")
-
-    if len(m.command) < 2:
-        return await m.reply("Usage: /rob 1000")
-
-    amount = int(m.command[1])
-
-    victim = m.reply_to_message.from_user
-    robber = m.from_user
-
-    if victim.id in protected_users:
-        if protected_users[victim.id] > datetime.now():
-            return await m.reply(
-                "🛡 User Protected"
-            )
-
-    victim_cash = await get_cash(victim.id)
-
-    if victim_cash < amount:
-        return await m.reply(
-            f"Target has only {victim_cash} Cash"
-        )
-
-    success = random.randint(1, 100)
-
-    if success <= 60:
-        await update_cash(victim.id, -amount)
-        await update_cash(robber.id, amount)
-
-        await m.reply(
-            f"🦹 Rob Success\n💰 {amount} Cash Stolen"
-        )
-    else:
-        await m.reply(
-            "🚔 Rob Failed"
-        )
-#kill
-@bot.on_message(filters.command("kill"))
-async def kill_user(_, m):
-
-    if not m.reply_to_message:
-        return await m.reply("Reply to target.")
-
-    killer = m.from_user
-    victim = m.reply_to_message.from_user
-
-    if victim.id in protected_users:
-        if protected_users[victim.id] > datetime.now():
-            return await m.reply(
-                "🛡 User Protected"
-            )
-
-    victim_cash = await get_cash(victim.id)
-
-    reward = victim_cash + 100
-
-    await update_cash(victim.id, -victim_cash)
-    await update_cash(killer.id, reward)
-
-    await m.reply(
-        f"☠️ Kill Success\n"
-        f"💰 Loot: {victim_cash}\n"
-        f"🎁 Bonus: 100"
+        f"✅ Transfer Successful\n\n"
+        f"💸 Sent: {amount}"
     )
