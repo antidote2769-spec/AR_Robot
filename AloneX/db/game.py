@@ -192,3 +192,74 @@ async def remove_bank(user_id: int, amount: int):
         upsert=True
     )
     return True
+# =========================
+# TIC TAC TOE GAME DATABASE
+# =========================
+
+async def create_ttt(game_id, player1, player2="bot"):
+    await db.update_one(
+        {"game_id": game_id},
+        {
+            "$set": {
+                "game_id": game_id,
+                "player1": player1,
+                "player2": player2,
+                "board": [
+                    "⬜","⬜","⬜",
+                    "⬜","⬜","⬜",
+                    "⬜","⬜","⬜"
+                ],
+                "turn": player1,
+                "status": "playing"
+            }
+        },
+        upsert=True
+    )
+
+    return True
+
+
+
+async def get_ttt(game_id):
+    return await db.find_one(
+        {"game_id": game_id}
+    )
+
+
+
+async def update_ttt(game_id, board, turn):
+    await db.update_one(
+        {"game_id": game_id},
+        {
+            "$set": {
+                "board": board,
+                "turn": turn
+            }
+        }
+    )
+
+    return True
+
+
+
+async def delete_ttt(game_id):
+    await db.delete_one(
+        {"game_id": game_id}
+    )
+
+    return True
+
+
+
+async def end_ttt(game_id, winner):
+    await db.update_one(
+        {"game_id": game_id},
+        {
+            "$set": {
+                "status": "ended",
+                "winner": winner
+            }
+        }
+    )
+
+    return True
