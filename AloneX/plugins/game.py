@@ -337,9 +337,9 @@ async def rob_cash(_, m):
         await m.reply(
             "🚔 Rob Failed"
         )
-    #kill
-    @bot.on_message(filters.command("kill"))
-    async def kill_user(_, m):
+#kill
+@bot.on_message(filters.command("kill"))
+async def kill_user(_, m):
 
     if not m.reply_to_message:
         return await m.reply("Reply to target.")
