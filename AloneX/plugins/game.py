@@ -9,10 +9,12 @@ from AloneX.db.game import (
     update_kills,
     get_kills,
     set_protection,
-    get_protection
+    get_protection,
+    get_profile,
+    get_richlist
+
 )
 from datetime import datetime, timedelta
-from db.game import get_profile, get_richlist
 
 __module__ = "Games 🎮"
 
