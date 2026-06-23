@@ -42,3 +42,81 @@ async def get_top_users(limit: int = 10):
     top_users = await db.find().sort("cash", -1).limit(limit).to_list(limit)
     return top_users
 
+# =========================
+# NEW ECONOMY FUNCTIONS
+# =========================
+
+async def register_user(user_id: int, name: str = None):
+    user = await db.find_one({"user_id": user_id})
+
+    if not user:
+        await db.insert_one(
+            {
+                "user_id": user_id,
+                "name": name,
+                "cash": 500,
+                "bank": 0,
+                "kills": 0,
+                "protection": None,
+                "daily": 0,
+                "work": 0,
+                "crime": 0
+            }
+        )
+
+    return True
+
+
+async def get_user(user_id: int):
+    return await db.find_one({"user_id": user_id})
+
+
+async def update_bank(user_id: int, amount: int):
+    await db.update_one(
+        {"user_id": user_id},
+        {"$inc": {"bank": amount}},
+        upsert=True
+    )
+
+
+async def get_bank(user_id: int):
+    user = await db.find_one({"user_id": user_id})
+
+    if not user:
+        return 0
+
+    return user.get("bank", 0)
+
+
+async def update_kills(user_id: int):
+    await db.update_one(
+        {"user_id": user_id},
+        {"$inc": {"kills": 1}},
+        upsert=True
+    )
+
+
+async def get_kills(user_id: int):
+    user = await db.find_one({"user_id": user_id})
+
+    if not user:
+        return 0
+
+    return user.get("kills", 0)
+
+
+async def set_protection(user_id: int, expiry):
+    await db.update_one(
+        {"user_id": user_id},
+        {"$set": {"protection": expiry}},
+        upsert=True
+    )
+
+
+async def get_protection(user_id: int):
+    user = await db.find_one({"user_id": user_id})
+
+    if not user:
+        return None
+
+    return user.get("protection")
