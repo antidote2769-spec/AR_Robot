@@ -12,6 +12,7 @@ from AloneX.db.game import (
     get_protection
 )
 from datetime import datetime, timedelta
+from db.game import get_profile, get_richlist
 
 __module__ = "Games 🎮"
 
