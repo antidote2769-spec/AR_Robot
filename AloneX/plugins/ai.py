@@ -8,7 +8,7 @@ from AloneX.helpers.decorator import Command, send_action, Callbacks, spam_contr
 from AloneX.helpers.scripts import AiChats, paste, Gemini, GPTGeneration
 from AloneX.helpers.utils import get_ua, UserId, get_as_document
 from telegram import Update, constants, helpers, error, ReplyParameters
-from telegram.ext import CallbackContext
+from from telegram.ext import CallbackContext, MessageHandler, filters
 from telegram import InputMediaPhoto, constants, InlineKeyboardMarkup, InlineKeyboardButton
 from AloneX.helpers.scripts import get_output
 import json
@@ -447,3 +447,59 @@ async def groq(update, context):
             text=f"❌ *ERROR*: `{str(e)}`",
             parse_mode=constants.ParseMode.MARKDOWN
         )
+async def auto_ai_chat(update, context):
+    message = update.effective_message
+    bot = context.bot
+
+    if not message or not message.text:
+        return
+
+    # DM me har message ka reply
+    if message.chat.type == "private":
+        prompt = message.text
+
+    # Group me bot ko reply karne par
+    elif (
+        message.reply_to_message
+        and message.reply_to_message.from_user
+        and message.reply_to_message.from_user.id == bot.id
+    ):
+        prompt = message.text
+
+    # Group me bot mention hone par
+    elif f"@{bot.username.lower()}" in message.text.lower():
+        prompt = message.text.replace(
+            f"@{bot.username}", ""
+        ).strip()
+
+    else:
+        return
+
+    thinking = await message.reply_text("💭 Thinking...")
+
+    try:
+        data = await ai.groq(
+            [{"role": "user", "content": prompt}],
+            api_key=config.GROQ_API_KEY
+        )
+
+        reply_text = data.get(
+            "reply",
+            "Sorry, I can't answer that."
+        )
+
+        if len(reply_text) > 4096:
+            reply_text = reply_text[:4000] + "..."
+
+        await thinking.edit_text(reply_text)
+
+    except Exception as e:
+        await thinking.edit_text(f"❌ Error: {e}")
+
+
+app.add_handler(
+    MessageHandler(
+        filters.TEXT & ~filters.COMMAND,
+        auto_ai_chat
+    )
+              )
