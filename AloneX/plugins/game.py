@@ -622,7 +622,7 @@ async def richlist(client, message):
         text += f"{i}. {user.get('name','Unknown')} - {user.get('cash',0)}\n"
 
     await message.reply(text,
-    reply_markup=close_button(m.from_user.id))
+    reply_markup=close_button(message.from_user.id))
 @bot.on_message(filters.command("beg"))
 async def beg(_, m: types.Message):
 
@@ -703,7 +703,7 @@ async def profile(client, message):
 🏦 Bank: {user['bank']}
 🔪 Kills: {user['kills']}
 """,
-    reply_markup=close_button(m.from_user.id)
+    reply_markup=close_button(message.from_user.id)
         )
 @bot.on_message(filters.command("bonus"))
 async def bonus(_, m):
