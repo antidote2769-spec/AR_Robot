@@ -6,6 +6,21 @@ from pyrogram.types import (
 )
 
 xo_games = {}
+def close_button(user_id):
+    return InlineKeyboardMarkup(
+        [[
+            InlineKeyboardButton(
+                "❌ Close",
+                callback_data=f"close_{user_id}"
+            )
+        ]]
+    )
+
+async def delete_command(message):
+    try:
+        await message.delete()
+    except:
+        pass
 xo_invites = {}
 from pyrogram import filters, types
 from AloneX import pbot as bot
@@ -36,7 +51,8 @@ __help__ = """
 """
 @bot.on_message(filters.command(["bal", "balance"]))
 async def balance(_, m: types.Message):
-
+    
+    await delete_command(m)
     await register_user(
         m.from_user.id,
         m.from_user.full_name
@@ -55,7 +71,7 @@ async def balance(_, m: types.Message):
     )
 @bot.on_message(filters.command("daily"))
 async def daily(_, m: types.Message):
-
+    await delete_command(m)
     await register_user(
         m.from_user.id,
         m.from_user.full_name
@@ -75,6 +91,7 @@ async def daily(_, m: types.Message):
 @bot.on_message(filters.command("work"))
 async def work(_, m: types.Message):
 
+    await delete_command(m)
     await register_user(
         m.from_user.id,
         m.from_user.full_name
@@ -94,6 +111,7 @@ async def work(_, m: types.Message):
 @bot.on_message(filters.command("crime"))
 async def crime(_, m: types.Message):
 
+    await delete_command(m)
     await register_user(
         m.from_user.id,
         m.from_user.full_name
@@ -131,6 +149,7 @@ async def crime(_, m: types.Message):
 @bot.on_message(filters.command("give"))
 async def give(_, m: types.Message):
 
+    await delete_command(m)
     await register_user(
         m.from_user.id,
         m.from_user.full_name
@@ -177,6 +196,7 @@ async def give(_, m: types.Message):
 @bot.on_message(filters.command("kill"))
 async def kill(_, m: types.Message):
 
+    await delete_command(m)
     await register_user(
         m.from_user.id,
         m.from_user.full_name
@@ -248,6 +268,7 @@ async def kill(_, m: types.Message):
 @bot.on_message(filters.command("kills"))
 async def kills(_, m: types.Message):
 
+    await delete_command(m)
     await register_user(
         m.from_user.id,
         m.from_user.full_name
@@ -263,6 +284,7 @@ async def kills(_, m: types.Message):
 @bot.on_message(filters.command("rob"))
 async def rob(_, m: types.Message):
 
+    await delete_command(m)
     await register_user(
         m.from_user.id,
         m.from_user.full_name
@@ -356,6 +378,7 @@ async def rob(_, m: types.Message):
 @bot.on_message(filters.command("roball"))
 async def rob_all(_, m: types.Message):
 
+    await delete_command(m)
     await register_user(
         m.from_user.id,
         m.from_user.full_name
@@ -401,6 +424,7 @@ async def rob_all(_, m: types.Message):
 @bot.on_message(filters.command("protect"))
 async def protect(_, m: types.Message):
 
+    await delete_command(m)
     await register_user(
         m.from_user.id,
         m.from_user.full_name
@@ -458,6 +482,7 @@ async def protect(_, m: types.Message):
 @bot.on_message(filters.command("shield"))
 async def shield(_, m: types.Message):
 
+    await delete_command(m)
     protection = await get_protection(
         m.from_user.id
     )
@@ -486,6 +511,7 @@ async def shield(_, m: types.Message):
 @bot.on_message(filters.command("bank"))
 async def bank(_, m: types.Message):
 
+    await delete_command(m)
     await register_user(
         m.from_user.id,
         m.from_user.full_name
@@ -507,6 +533,7 @@ async def bank(_, m: types.Message):
 @bot.on_message(filters.command("deposit"))
 async def deposit(_, m: types.Message):
 
+    await delete_command(m)
     if len(m.command) < 2:
         return await m.reply(
             "Usage: /deposit amount"
@@ -539,6 +566,7 @@ async def deposit(_, m: types.Message):
 @bot.on_message(filters.command("withdraw"))
 async def withdraw(_, m: types.Message):
 
+    await delete_command(m)
     if len(m.command) < 2:
         return await m.reply(
             "Usage: /withdraw amount"
@@ -571,6 +599,7 @@ async def withdraw(_, m: types.Message):
 @bot.on_message(filters.command("richlist"))
 async def richlist(client, message):
 
+    await delete_command(m)
     users = await get_richlist(10)
 
     text = "💰 TOP RICH USERS\n\n"
@@ -598,6 +627,7 @@ async def beg(_, m: types.Message):
 @bot.on_message(filters.command("flip"))
 async def flip(_, m: types.Message):
 
+    await delete_command(m)
     if len(m.command) < 2:
         return await m.reply(
             "Usage: /flip amount"
@@ -642,6 +672,7 @@ async def flip(_, m: types.Message):
 @bot.on_message(filters.command("profile"))
 async def profile(client, message):
 
+    await delete_command(m)
     user_id = message.from_user.id
 
     user = await get_profile(user_id)
@@ -661,6 +692,7 @@ async def profile(client, message):
 @bot.on_message(filters.command("bonus"))
 async def bonus(_, m):
 
+    await delete_command(m)
     reward = random.randint(
         100,
         2000
@@ -678,6 +710,7 @@ async def bonus(_, m):
 @bot.on_message(filters.command("mine"))
 async def mine(_, m):
 
+    await delete_command(m)
     reward = random.randint(
         500,
         5000
@@ -695,6 +728,7 @@ async def mine(_, m):
 @bot.on_message(filters.command("fish"))
 async def fish(_, m):
 
+    await delete_command(m)
     reward = random.randint(
         200,
         3000
@@ -712,6 +746,7 @@ async def fish(_, m):
 @bot.on_message(filters.command("hunt"))
 async def hunt(_, m):
 
+    await delete_command(m)
     reward = random.randint(
         1000,
         7000
@@ -773,6 +808,7 @@ def make_board(game_id):
 @bot.on_message(filters.command("xo"))
 async def xo_start(_, m):
 
+    await delete_command(m)
     user = m.from_user.id
 
     if m.reply_to_message:
@@ -926,3 +962,19 @@ async def xo_callback(_, query: CallbackQuery):
     await query.message.edit_reply_markup(
         reply_markup=make_board(game_id)
         )
+    
+@bot.on_callback_query(filters.regex("^close_"))
+async def close_callback(_, query: CallbackQuery):
+
+    user_id = int(query.data.split("_")[1])
+
+    if query.from_user.id != user_id:
+        return await query.answer(
+            "Ye button aapka nahi hai!",
+            show_alert=True
+        )
+
+    try:
+        await query.message.delete()
+    except:
+        pass
