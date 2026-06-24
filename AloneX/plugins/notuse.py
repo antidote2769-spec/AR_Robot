@@ -55,10 +55,12 @@ async def ban_check(client, message):
     if not message.from_user:
         return
 
+    print(f"Checking User: {message.from_user.id}")
+
     if await is_banned(message.from_user.id):
+        print(f"BANNED USER DETECTED: {message.from_user.id}")
+
         await message.reply_text(
-            "🚫 𝗔𝗖𝗖𝗘𝗦𝗦 𝗗𝗘𝗡𝗜𝗘𝗗!\n\n"
-            "You are banned from using AR_XBOT.\n"
-            "Contact the bot owner if you think this is a mistake."
+            "🚫 You are banned from using AR_XBOT."
         )
         raise StopPropagation
