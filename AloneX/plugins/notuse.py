@@ -1,7 +1,7 @@
 from pyrogram import Client, filters
 from AloneX.db.ban_db import ban_user, unban_user
 
-OWNER_ID = 123456789  # Apna Telegram User ID
+OWNER_ID = 8773888974  # Apna Telegram User ID
 
 @Client.on_message(filters.command("notuse") & filters.user(OWNER_ID))
 async def notuse_cmd(client, message):
