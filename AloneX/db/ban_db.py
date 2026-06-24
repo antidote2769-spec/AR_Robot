@@ -15,6 +15,7 @@ async def unban_user(user_id):
     )
 
 async def is_banned(user_id):
-    return await blocked_users.find_one(
+    user = await blocked_users.find_one(
         {"user_id": user_id}
     )
+    return bool(user)
