@@ -1,9 +1,7 @@
 from pymongo import MongoClient
+from AloneX import mongodb
 
-# Apne existing db object ko import karo
-from AloneX import db
-
-blocked_users = db.blocked_users
+blocked_users = mongodb.blocked_users
 
 def ban_user(user_id):
     blocked_users.update_one(
