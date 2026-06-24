@@ -1,24 +1,38 @@
 from pyrogram import Client, filters
 from AloneX.db.ban_db import ban_user, unban_user
 
-OWNER_ID = 8773888974,8871937776  # apna Telegram ID
+OWNER_ID = 8773888974  # Apna Telegram User ID
 
 @Client.on_message(filters.command("notuse") & filters.user(OWNER_ID))
 async def notuse_cmd(client, message):
     if len(message.command) < 2:
-        return await message.reply_text("Usage: /notuse user_id")
+        return await message.reply_text(
+            "Usage:\n/notuse user_id"
+        )
 
-    user_id = int(message.command[1])
-    ban_user(user_id)
+    try:
+        user_id = int(message.command[1])
+        await ban_user(user_id)
 
-    await message.reply_text("🚫 User blocked.")
+        await message.reply_text(
+            f"🚫 User {user_id} blocked successfully."
+        )
+    except Exception as e:
+        await message.reply_text(f"Error: {e}")
+
 
 @Client.on_message(filters.command("use") & filters.user(OWNER_ID))
 async def use_cmd(client, message):
     if len(message.command) < 2:
-        return await message.reply_text("Usage: /use user_id")
+        return await message.reply_text(
+            "Usage:\n/use user_id"
+        )
 
-    user_id = int(message.command[1])
-    unban_user(user_id)
+    try:
+        user_id = int(message.command[1])
+        await unban_user(user_id)
 
-    await message.reply_text("✅ User unblocked.")
+        await message.reply_text(
+            f"✅ User {user_id} unblocked successfully."
+        )
+    except Exception as e:
