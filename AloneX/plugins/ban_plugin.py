@@ -1,4 +1,4 @@
-from pyrogram import app, filters
+from AloneX import app
 from pyrogram.types import Message
 from AloneX.db.ban_db import ban_user, unban_user, is_banned
 
