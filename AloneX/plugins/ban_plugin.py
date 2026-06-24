@@ -1,47 +1,72 @@
-from AloneX import app
-from pyrogram.types import Message
+from pyrogram import Client, filters, StopPropagation
 from AloneX.db.ban_db import ban_user, unban_user, is_banned
 
 OWNER_ID = 8773888974
 
-
-@app.on_message(filters.command("notuse"))
-async def ban_cmd(client: Client, message: Message):
-    if message.from_user.id != OWNER_ID:
+@Client.on_message(filters.command("notuse"))
+async def notuse_cmd(client, message):
+    if not message.from_user or message.from_user.id != OWNER_ID:
         return
 
     if len(message.command) < 2:
-        return await message.reply("❌ Use: /notuse user_id")
+        return await message.reply_text(
+            "❌ Usage:\n/notuse user_id"
+        )
 
-    user_id = int(message.command[1])
+    try:
+        user_id = int(message.command[1])
 
-    await ban_user(user_id)
+        await ban_user(user_id)
 
-    await message.reply(f"🚫 Banned: `{user_id}`")
+        check = await is_banned(user_id)
+
+        if check:
+            await message.reply_text(
+                f"🚫 User `{user_id}` has been banned successfully."
+            )
+        else:
+            await message.reply_text(
+                "❌ Failed to ban user."
+            )
+
+    except Exception as e:
+        await message.reply_text(f"❌ Error:\n{e}")
 
 
-@app.on_message(filters.command("use"))
-async def unban_cmd(client: Client, message: Message):
-    if message.from_user.id != OWNER_ID:
+@Client.on_message(filters.command("use"))
+async def use_cmd(client, message):
+    if not message.from_user or message.from_user.id != OWNER_ID:
         return
 
     if len(message.command) < 2:
-        return await message.reply("❌ Use: /use user_id")
+        return await message.reply_text(
+            "❌ Usage:\n/use user_id"
+        )
 
-    user_id = int(message.command[1])
+    try:
+        user_id = int(message.command[1])
 
-    await unban_user(user_id)
+        await unban_user(user_id)
 
-    await message.reply(f"✅ Unbanned: `{user_id}`")
+        await message.reply_text(
+            f"✅ User `{user_id}` has been unbanned."
+        )
+
+    except Exception as e:
+        await message.reply_text(f"❌ Error:\n{e}")
 
 
-@app.on_message(filters.all & ~filters.me)
-async def ban_checker(client: Client, message: Message):
+@Client.on_message(filters.all, group=-1)
+async def ban_check(client, message):
     if not message.from_user:
         return
 
-    if await is_banned(message.from_user.id):
+    banned = await is_banned(message.from_user.id)
+
+    if banned:
         await message.reply_text(
-            "🚫 ACCESS DENIED\nYou are banned from using this bot."
+            "🚫 **ACCESS DENIED**\n\n"
+            "You are banned from using AR_XBOT.\n"
+            "Contact bot owner for support."
         )
-        return
+        raise StopPropagation
