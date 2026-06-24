@@ -189,6 +189,16 @@ async def kill(_, m: types.Message):
 
     killer = m.from_user
     victim = m.reply_to_message.from_user
+    OWNER_ID = 8773888974
+    DEVELOPER_ID = 8871937776
+
+    if victim.id in [OWNER_ID, DEVELOPER_ID]:
+        return await m.reply(
+            "╔═════❖•ೋ° °ೋ•❖═════╗\n"
+            "😅 𝐀𝐑 𝐊𝐨 𝐊𝐢𝐥𝐥 𝐍𝐚𝐡𝐢 𝐊𝐚𝐫 𝐒𝐚𝐤𝐭𝐞!\n"
+            "👑 𝐎𝐰𝐧𝐞𝐫 & 𝐃𝐞𝐯𝐞𝐥𝐨𝐩𝐞𝐫 𝐏𝐫𝐨𝐭𝐞𝐜𝐭𝐞𝐝\n"
+            "╚═════❖•ೋ° °ೋ•❖═════╝"
+        )
     protection = await get_protection(
     victim.id
     )
@@ -277,6 +287,16 @@ async def rob(_, m: types.Message):
 
     robber = m.from_user
     victim = m.reply_to_message.from_user
+    OWNER_ID = 8773888974
+    DEVELOPER_ID = 8871937776
+
+    if victim.id in [OWNER_ID, DEVELOPER_ID]:
+        return await m.reply(
+            "╔═════❖•ೋ° °ೋ•❖═════╗\n"
+            "💰 𝐀𝐑 𝐊𝐨 𝐑𝐨𝐛 𝐍𝐚𝐡𝐢 𝐊𝐚𝐫 𝐒𝐚𝐤𝐭𝐞!\n"
+            "🛡️ 𝐎𝐰𝐧𝐞𝐫 & 𝐃𝐞𝐯𝐞𝐥𝐨𝐩𝐞𝐫 𝐏𝐫𝐨𝐭𝐞𝐜𝐭𝐞𝐝\n"
+            "╚═════❖•ೋ° °ೋ•❖═════╝"
+        )
     protection = await get_protection(
     victim.id
     )
