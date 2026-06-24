@@ -1,7 +1,7 @@
 from pyrogram import Client, filters
 from AloneX.db.ban_db import ban_user, unban_user
 
-OWNER_ID = 8773888974  # Apna Telegram User ID
+OWNER_ID = 123456789  # Apna Telegram User ID
 
 @Client.on_message(filters.command("notuse") & filters.user(OWNER_ID))
 async def notuse_cmd(client, message):
@@ -36,3 +36,14 @@ async def use_cmd(client, message):
             f"✅ User {user_id} unblocked successfully."
         )
     except Exception as e:
+        await message.reply_text(f"Error: {e}")
+from AloneX.db.ban_db import is_banned
+from pyrogram import StopPropagation
+
+@Client.on_message(filters.all, group=-1)
+async def ban_check(client, message):
+    if not message.from_user:
+        return
+
+    if await is_banned(message.from_user.id):
+        raise StopPropagation        
