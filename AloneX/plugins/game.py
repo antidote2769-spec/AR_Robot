@@ -599,7 +599,6 @@ async def withdraw(_, m: types.Message):
 @bot.on_message(filters.command("richlist"))
 async def richlist(client, message):
 
-    await delete_command(m)
     users = await get_richlist(10)
 
     text = "💰 TOP RICH USERS\n\n"
@@ -607,6 +606,7 @@ async def richlist(client, message):
     for i, user in enumerate(users, 1):
         text += f"{i}. {user.get('name','Unknown')} - {user.get('cash',0)}\n"
 
+    await delete_command(m)
     await message.reply(text)
 @bot.on_message(filters.command("beg"))
 async def beg(_, m: types.Message):
@@ -672,7 +672,6 @@ async def flip(_, m: types.Message):
 @bot.on_message(filters.command("profile"))
 async def profile(client, message):
 
-    await delete_command(m)
     user_id = message.from_user.id
 
     user = await get_profile(user_id)
@@ -681,6 +680,7 @@ async def profile(client, message):
         await message.reply("❌ Profile not found")
         return
 
+    await delete_command(m)
     await message.reply(
         f"""
 👤 Name: {user['name']}
