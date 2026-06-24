@@ -1,0 +1,23 @@
+from pymongo import MongoClient
+
+# Apne existing db object ko import karo
+from db import db
+
+blocked_users = db.blocked_users
+
+def ban_user(user_id):
+    blocked_users.update_one(
+        {"user_id": user_id},
+        {"$set": {"user_id": user_id}},
+        upsert=True
+    )
+
+def unban_user(user_id):
+    blocked_users.delete_one(
+        {"user_id": user_id}
+    )
+
+def is_banned(user_id):
+    return blocked_users.find_one(
+        {"user_id": user_id}
+    )
