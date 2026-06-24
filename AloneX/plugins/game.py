@@ -67,7 +67,8 @@ async def balance(_, m: types.Message):
 
     await m.reply(
         f"💰 Balance\n\n"
-        f"💸 Cash: {cash}"
+        f"💸 Cash: {cash}",
+    reply_markup=close_button(m.from_user.id)
     )
 @bot.on_message(filters.command("daily"))
 async def daily(_, m: types.Message):
@@ -86,7 +87,8 @@ async def daily(_, m: types.Message):
 
     await m.reply(
         f"🎁 Daily Reward\n\n"
-        f"💸 +{reward} Cash"
+        f"💸 +{reward} Cash",
+    reply_markup=close_button(m.from_user.id)
     ) 
 @bot.on_message(filters.command("work"))
 async def work(_, m: types.Message):
@@ -106,7 +108,8 @@ async def work(_, m: types.Message):
 
     await m.reply(
         f"👨‍💻 Work Completed\n\n"
-        f"💰 Earned: {reward}"
+        f"💰 Earned: {reward}",
+    reply_markup=close_button(m.from_user.id)
     )
 @bot.on_message(filters.command("crime"))
 async def crime(_, m: types.Message):
@@ -144,7 +147,8 @@ async def crime(_, m: types.Message):
 
         await m.reply(
             f"🚔 Police Caught You\n\n"
-            f"💸 Fine: {fine}"
+            f"💸 Fine: {fine}",
+        reply_markup=close_button(m.from_user.id)
         )   
 @bot.on_message(filters.command("give"))
 async def give(_, m: types.Message):
@@ -191,7 +195,8 @@ async def give(_, m: types.Message):
 
     await m.reply(
         f"✅ Transfer Successful\n\n"
-        f"💸 Sent: {amount}"
+        f"💸 Sent: {amount}",
+    reply_markup=close_button(m.from_user.id)
     )
 @bot.on_message(filters.command("kill"))
 async def kill(_, m: types.Message):
@@ -263,7 +268,8 @@ async def kill(_, m: types.Message):
         f"👤 Victim: {victim.mention}\n"
         f"💰 Looted: {victim_cash}\n"
         f"🎁 Bonus: 100\n"
-        f"🏆 Total Kills: {kills}"
+        f"🏆 Total Kills: {kills}",
+    reply_markup=close_button(m.from_user.id)
     )
 @bot.on_message(filters.command("kills"))
 async def kills(_, m: types.Message):
@@ -279,7 +285,8 @@ async def kills(_, m: types.Message):
     )
 
     await m.reply(
-        f"☠️ Total Kills: {total}"
+        f"☠️ Total Kills: {total}",
+    reply_markup=close_button(m.from_user.id)
         )
 @bot.on_message(filters.command("rob"))
 async def rob(_, m: types.Message):
@@ -373,7 +380,8 @@ async def rob(_, m: types.Message):
 
         await m.reply(
             f"🚔 ROB FAILED\n\n"
-            f"💸 Fine: {fine}"
+            f"💸 Fine: {fine}",
+        reply_markup=close_button(m.from_user.id)
         )
 @bot.on_message(filters.command("roball"))
 async def rob_all(_, m: types.Message):
@@ -419,7 +427,8 @@ async def rob_all(_, m: types.Message):
     await m.reply(
         f"💀 ROB ALL SUCCESS\n\n"
         f"💰 Looted: {loot}\n"
-        f"📊 {percentage}% stolen"
+        f"📊 {percentage}% stolen",
+    reply_markup=close_button(m.from_user.id)
     )
 @bot.on_message(filters.command("protect"))
 async def protect(_, m: types.Message):
@@ -477,7 +486,8 @@ async def protect(_, m: types.Message):
     await m.reply(
         f"🛡 Protection Activated\n\n"
         f"Plan: {plan}\n"
-        f"Cost: {cost}"
+        f"Cost: {cost}",
+    reply_markup=close_button(m.from_user.id)
     )
 @bot.on_message(filters.command("shield"))
 async def shield(_, m: types.Message):
@@ -506,7 +516,8 @@ async def shield(_, m: types.Message):
 
     await m.reply(
         f"🛡 Protection Active\n\n"
-        f"⏰ Remaining: {hours} hours"
+        f"⏰ Remaining: {hours} hours",
+    reply_markup=close_button(m.from_user.id)
     )
 @bot.on_message(filters.command("bank"))
 async def bank(_, m: types.Message):
@@ -528,7 +539,8 @@ async def bank(_, m: types.Message):
     await m.reply(
         f"🏦 BANK ACCOUNT\n\n"
         f"💵 Cash: {cash}\n"
-        f"🏦 Bank: {bank_cash}"
+        f"🏦 Bank: {bank_cash}",
+    reply_markup=close_button(m.from_user.id)
     )
 @bot.on_message(filters.command("deposit"))
 async def deposit(_, m: types.Message):
@@ -561,7 +573,8 @@ async def deposit(_, m: types.Message):
     )
 
     await m.reply(
-        f"🏦 Deposited {amount} Cash"
+        f"🏦 Deposited {amount} Cash",
+    reply_markup=close_button(m.from_user.id)
     )
 @bot.on_message(filters.command("withdraw"))
 async def withdraw(_, m: types.Message):
@@ -594,7 +607,8 @@ async def withdraw(_, m: types.Message):
     )
 
     await m.reply(
-        f"💰 Withdrawn {amount} Cash"
+        f"💰 Withdrawn {amount} Cash",
+    reply_markup=close_button(m.from_user.id)
     )
 @bot.on_message(filters.command("richlist"))
 async def richlist(client, message):
@@ -607,7 +621,8 @@ async def richlist(client, message):
     for i, user in enumerate(users, 1):
         text += f"{i}. {user.get('name','Unknown')} - {user.get('cash',0)}\n"
 
-    await message.reply(text)
+    await message.reply(text,
+    reply_markup=close_button(m.from_user.id))
 @bot.on_message(filters.command("beg"))
 async def beg(_, m: types.Message):
 
@@ -687,7 +702,8 @@ async def profile(client, message):
 💰 Cash: {user['cash']}
 🏦 Bank: {user['bank']}
 🔪 Kills: {user['kills']}
-"""
+""",
+    reply_markup=close_button(m.from_user.id)
         )
 @bot.on_message(filters.command("bonus"))
 async def bonus(_, m):
