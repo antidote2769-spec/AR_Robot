@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 
 # Apne existing db object ko import karo
-from db import db
+from AloneX import db
 
 blocked_users = db.blocked_users
 
