@@ -224,7 +224,11 @@ from AloneX.db.game import (
     add_bank,
     remove_bank,
     get_bank,
-    update_bank
+    update_bank,
+    add_item,
+    remove_item,
+    get_inventory,
+    has_item
 )
 from datetime import datetime, timedelta
 
@@ -1180,3 +1184,40 @@ async def close_callback(_, query: CallbackQuery):
         await query.message.delete()
     except:
         pass
+@bot.on_message(filters.command("inventory"))
+async def inventory(_, m):
+
+    await delete_command(m)
+    await register_user(
+        m.from_user.id,
+        m.from_user.full_name
+    )
+
+    inv = await get_inventory(m.from_user.id)
+
+    if not inv:
+        return await m.reply(
+            "🎒 Your inventory is empty.",
+            reply_markup=close_button(m.from_user.id)
+        )
+
+    icons = {
+        "knife": "🔪",
+        "gun": "🔫",
+        "shield": "🛡",
+        "medkit": "❤️",
+        "diamond": "💎",
+        "key": "🗝"
+    }
+
+    text = "🎒 **YOUR INVENTORY**\n\n"
+
+    for item, amount in inv.items():
+        if amount > 0:
+            emoji = icons.get(item, "📦")
+            text += f"{emoji} {item.title()} × {amount}\n"
+
+    await m.reply(
+        text,
+        reply_markup=close_button(m.from_user.id)
+    )
