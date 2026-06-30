@@ -131,10 +131,27 @@ async def arworld(_, m):
     arworld_cd[user_id] = now
 
     event = random.choice(ARWORLD_EVENTS)
+
     reward = random.randint(
         event["cash"][0],
         event["cash"][1]
     )
+
+    # 🎁 Rare Bonus (10%)
+    if random.randint(1, 100) <= 10:
+        bonus = random.randint(3000, 7000)
+        reward += bonus
+        event["text"] += f"\n\n🎁 Lucky Bonus: +{bonus} Cash"
+
+    # 👑 Ultra Jackpot (1%)
+    if random.randint(1, 100) == 1:
+        jackpot = random.randint(25000, 50000)
+        reward += jackpot
+        event["text"] += (
+            f"\n\n👑 JACKPOT!\n"
+            f"💰 Secret AR Vault Found!\n"
+            f"💎 Jackpot: +{jackpot} Cash"
+        )
 
     await update_cash(
         user_id,
@@ -144,41 +161,42 @@ async def arworld(_, m):
     cash = await get_cash(user_id)
 
     locations = [
-    "🏙 Downtown",
-    "🏦 Central Bank",
-    "🎰 Casino",
-    "🌳 Forest",
-    "🏜 Desert",
-    "🏭 Factory",
-    "🚢 Harbor",
-    "✈ Airport",
-    "🏘 Old Town",
-    "🌉 City Bridge"
-]
+        "🏙 Downtown",
+        "🏦 Central Bank",
+        "🎰 Casino",
+        "🌳 Forest",
+        "🏜 Desert",
+        "🏭 Factory",
+        "🚢 Harbor",
+        "✈ Airport",
+        "🏘 Old Town",
+        "🌉 City Bridge"
+    ]
 
-location = random.choice(locations)
+    location = random.choice(locations)
 
-if reward >= 0:
-    status = f"🟢 Profit : +{reward} Cash"
-else:
-    status = f"🔴 Loss : {abs(reward)} Cash"
+    status = (
+        f"🟢 Profit: +{reward} Cash"
+        if reward >= 0
+        else f"🔴 Loss: {abs(reward)} Cash"
+    )
 
-msg = (
-    "╔════════════════════╗\n"
-    "🌆 **ＡＲ ＷＯＲＬＤ** 🌆\n"
-    "╚════════════════════╝\n\n"
-    f"📍 Location : {location}\n\n"
-    f"{event['text']}\n\n"
-    f"{status}\n\n"
-    f"💰 Balance : {cash}\n\n"
-    "━━━━━━━━━━━━━━━━━━\n"
-    "✨ Explore Again After 30 Seconds!"
-)
+    msg = (
+        "╔════════════════════╗\n"
+        "🌆 AR WORLD 🌆\n"
+        "╚════════════════════╝\n\n"
+        f"📍 Location: {location}\n\n"
+        f"{event['text']}\n\n"
+        f"{status}\n\n"
+        f"💰 Balance: {cash}\n\n"
+        "━━━━━━━━━━━━━━━━━━\n"
+        "✨ Explore Again After 30 Seconds!"
+    )
 
     await m.reply(
         msg,
         reply_markup=close_button(user_id)
-        )
+    )    
 # ===========================
 # 🌆 AR WORLD BONUS EVENTS
 # ===========================
