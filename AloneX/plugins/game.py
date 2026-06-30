@@ -16,6 +16,192 @@ def close_button(user_id):
         ]]
     )
 
+# ===========================
+# 🌆 AR WORLD GAME
+# ===========================
+
+import time
+
+arworld_cd = {}
+
+ARWORLD_EVENTS = [
+
+    {
+        "text": "🏦 You robbed a small bank and escaped!",
+        "cash": (2500, 8000)
+    },
+
+    {
+        "text": "💎 You found a hidden diamond underground!",
+        "cash": (4000, 12000)
+    },
+
+    {
+        "text": "🎁 You discovered a mystery supply box.",
+        "cash": (1500, 5000)
+    },
+
+    {
+        "text": "🚕 You worked as a taxi driver.",
+        "cash": (500, 2500)
+    },
+
+    {
+        "text": "🍕 You delivered food around the city.",
+        "cash": (300, 1800)
+    },
+
+    {
+        "text": "🏭 Factory manager rewarded your hard work.",
+        "cash": (1500, 4500)
+    },
+
+    {
+        "text": "🎰 You won a lucky casino game!",
+        "cash": (2500, 9000)
+    },
+
+    {
+        "text": "🪙 You found forgotten cash near an ATM.",
+        "cash": (500, 2500)
+    },
+
+    {
+        "text": "🏆 You completed a secret mission.",
+        "cash": (5000, 15000)
+    },
+
+    {
+        "text": "🚔 Police caught you speeding.",
+        "cash": (-3000, -1000)
+    },
+
+    {
+        "text": "🥷 A street gang robbed you.",
+        "cash": (-5000, -1500)
+    },
+
+    {
+        "text": "💥 Your vehicle crashed.",
+        "cash": (-3500, -1200)
+    },
+
+    {
+        "text": "🩺 Hospital charged your treatment fees.",
+        "cash": (-2500, -800)
+    },
+
+    {
+        "text": "🔥 Your backpack caught fire.",
+        "cash": (-4500, -1500)
+    },
+
+    {
+        "text": "🎉 City festival rewarded all visitors!",
+        "cash": (3000, 7000)
+    },
+
+    {
+        "text": "👑 You found an Ancient Treasure!",
+        "cash": (10000, 25000)
+    }
+
+]
+@bot.on_message(filters.command("arworld"))
+async def arworld(_, m):
+
+    await delete_command(m)
+    await register_user(
+        m.from_user.id,
+        m.from_user.full_name
+    )
+
+    user_id = m.from_user.id
+    now = time.time()
+
+    # 30 Seconds Cooldown
+    if user_id in arworld_cd:
+        left = int(30 - (now - arworld_cd[user_id]))
+        if left > 0:
+            return await m.reply(
+                f"⏳ Please wait {left} seconds before exploring AR World again.",
+                reply_markup=close_button(user_id)
+            )
+
+    arworld_cd[user_id] = now
+
+    event = random.choice(ARWORLD_EVENTS)
+    reward = random.randint(
+        event["cash"][0],
+        event["cash"][1]
+    )
+
+    await update_cash(
+        user_id,
+        reward
+    )
+
+    cash = await get_cash(user_id)
+
+    locations = [
+    "🏙 Downtown",
+    "🏦 Central Bank",
+    "🎰 Casino",
+    "🌳 Forest",
+    "🏜 Desert",
+    "🏭 Factory",
+    "🚢 Harbor",
+    "✈ Airport",
+    "🏘 Old Town",
+    "🌉 City Bridge"
+]
+
+location = random.choice(locations)
+
+if reward >= 0:
+    status = f"🟢 Profit : +{reward} Cash"
+else:
+    status = f"🔴 Loss : {abs(reward)} Cash"
+
+msg = (
+    "╔════════════════════╗\n"
+    "🌆 **ＡＲ ＷＯＲＬＤ** 🌆\n"
+    "╚════════════════════╝\n\n"
+    f"📍 Location : {location}\n\n"
+    f"{event['text']}\n\n"
+    f"{status}\n\n"
+    f"💰 Balance : {cash}\n\n"
+    "━━━━━━━━━━━━━━━━━━\n"
+    "✨ Explore Again After 30 Seconds!"
+)
+
+    await m.reply(
+        msg,
+        reply_markup=close_button(user_id)
+        )
+# ===========================
+# 🌆 AR WORLD BONUS EVENTS
+# ===========================
+
+# Is block ko Part 2 me
+# event = random.choice(ARWORLD_EVENTS)
+# ke BAAD paste karo.
+
+# 🎁 Rare Bonus (10%)
+if random.randint(1, 100) <= 10:
+    bonus = random.randint(3000, 7000)
+    reward += bonus
+    event["text"] += f"\n\n🎁 Lucky Bonus: +{bonus} Cash"
+
+# 👑 Ultra Jackpot (1%)
+if random.randint(1, 100) == 1:
+    jackpot = random.randint(25000, 50000)
+    reward += jackpot
+    event["text"] += (
+        f"\n\n👑 JACKPOT!!!\n"
+        f"💎 You discovered the Secret AR Vault!\n"
+        f"💰 Jackpot: +{jackpot} Cash"
+    )    
 async def delete_command(message):
     try:
         await message.delete()
