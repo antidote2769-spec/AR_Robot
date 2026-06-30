@@ -4,6 +4,29 @@ from pyrogram.types import (
     InlineKeyboardButton,
     CallbackQuery
 )
+from pyrogram import filters, types
+from AloneX import pbot as bot
+from AloneX.db.game import (
+    register_user,
+    get_cash,
+    update_cash,
+    update_name,
+    update_kills,
+    get_kills,
+    set_protection,
+    get_protection,
+    get_profile,
+    get_richlist,
+    add_bank,
+    remove_bank,
+    get_bank,
+    update_bank,
+    add_item,
+    remove_item,
+    get_inventory,
+    has_item
+)
+from datetime import datetime, timedelta
 
 xo_games = {}
 def close_button(user_id):
@@ -226,29 +249,6 @@ async def delete_command(message):
     except:
         pass
 xo_invites = {}
-from pyrogram import filters, types
-from AloneX import pbot as bot
-from AloneX.db.game import (
-    register_user,
-    get_cash,
-    update_cash,
-    update_name,
-    update_kills,
-    get_kills,
-    set_protection,
-    get_protection,
-    get_profile,
-    get_richlist,
-    add_bank,
-    remove_bank,
-    get_bank,
-    update_bank,
-    add_item,
-    remove_item,
-    get_inventory,
-    has_item
-)
-from datetime import datetime, timedelta
 
 __module__ = "Games 🎮"
 
