@@ -60,7 +60,8 @@ async def register_user(user_id: int, name: str = None):
                 "protection": None,
                 "daily": 0,
                 "work": 0,
-                "crime": 0
+                "crime": 0,
+                "inventory": {}
             }
         )
 
@@ -263,3 +264,47 @@ async def end_ttt(game_id, winner):
     )
 
     return True
+# =========================
+# INVENTORY SYSTEM
+# =========================
+
+async def add_item(user_id: int, item: str, amount: int = 1):
+    await db.update_one(
+        {"user_id": user_id},
+        {"$inc": {f"inventory.{item}": amount}},
+        upsert=True
+    )
+    return True
+
+
+async def remove_item(user_id: int, item: str, amount: int = 1):
+    user = await db.find_one({"user_id": user_id})
+
+    if not user:
+        return False
+
+    inventory = user.get("inventory", {})
+
+    if inventory.get(item, 0) < amount:
+        return False
+
+    await db.update_one(
+        {"user_id": user_id},
+        {"$inc": {f"inventory.{item}": -amount}}
+    )
+
+    return True
+
+
+async def get_inventory(user_id: int):
+    user = await db.find_one({"user_id": user_id})
+
+    if not user:
+        return {}
+
+    return user.get("inventory", {})
+
+
+async def has_item(user_id: int, item: str):
+    inv = await get_inventory(user_id)
+    return inv.get(item, 0)
